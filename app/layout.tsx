@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Bhagavad Gita Chat",
-  description: "Explore the wisdom of the Bhagavad Gita with Sakha, your spiritual friend",
+  title: "Book Chat - RAG Application",
+  description: "Chat with your book using RAG and Gemini",
 };
 
 export default function RootLayout({
