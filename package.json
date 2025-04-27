@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "bash vercel-build.sh",
-    "start": "next start",
-    "serve": "node server.js",
+    "next-build": "next build",
+    "start": "node server.js",
     "lint": "next lint"
   },
   "dependencies": {
