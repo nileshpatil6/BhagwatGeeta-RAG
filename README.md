@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Book Chat - RAG Application
+
+This is a RAG (Retrieval-Augmented Generation) application that allows you to chat with your book. It uses Google's embedding model to index the book and Gemini to generate responses based on the retrieved context.
+
+## Features
+
+- Upload and index your book
+- Chat with your book using natural language
+- Retrieval-Augmented Generation for accurate responses
+- Built with Next.js for Vercel deployment
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18.17.0 or later
+- Google API key with access to Gemini API
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create a `.env.local` file in the root directory with your Google API key:
+   ```
+   GOOGLE_API_KEY=your-google-api-key-here
+   ```
+
+### Running the Application
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Indexing Your Book
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Prepare your book as a text file (.txt)
+2. Upload the book through the web interface
+3. The system will automatically index the book
 
-## Learn More
+## Deployment on Vercel
 
-To learn more about Next.js, take a look at the following resources:
+This application is designed to be deployed on Vercel's free tier:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Push your code to a GitHub repository
+2. Connect the repository to Vercel
+3. Add your Google API key as an environment variable
+4. Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## How It Works
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. The book is split into chunks and embedded using Google's embedding model
+2. When you ask a question, the system finds the most relevant chunks using vector similarity
+3. The relevant chunks are sent to Gemini along with your question
+4. Gemini generates a response based on the context

@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sakha - Your Spiritual Friend</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg-color: #f0f0f0;
+      --primary-color: #FF8C00;
+      --text-color: #333;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --card-bg: rgba(255, 255, 255, 0.8);
+      --header-height: 80px;
+      --footer-height: 60px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - var(--footer-height));
+      transition: all 0.3s ease;
+    }
+
+    /* Side content container (hidden on mobile) */
+    #sideContent {
+      display: none;
+    }
+
+    /* Desktop layout */
+    .container.desktop-layout {
+      flex-direction: row;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .container.desktop-layout .chat-container {
+      flex: 3;
+      max-height: calc(100vh - var(--header-height) - var(--footer-height) - 40px);
+      margin-bottom: 0;
+    }
+
+    .container.desktop-layout #sideContent {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-height: calc(100vh - var(--header-height) - var(--footer-height) - 40px);
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      animation: pulse 1s;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .logo img {
+      width: 70%;
+      max-width: 220px;
+      filter: drop-shadow(3px 3px 5px var(--shadow-color)) drop-shadow(-3px -3px 5px rgba(255, 255, 255, 0.7));
+      border-radius: 20px;
+    }
+
+    /* Header styles */
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 0;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .main-heading {
+      font-size: 2.5rem;
+      font-weight: bold;
+      background: linear-gradient(45deg, var(--primary-color), #ff9d00);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 10px;
+      filter: drop-shadow(3px 3px 5px var(--shadow-color)) drop-shadow(-3px -3px 5px rgba(255, 255, 255, 1));
+    }
+
+    /* Desktop header and logo adjustments */
+    @media (min-width: 1024px) {
+      header {
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 15px 20px;
+      }
+
+      .header-content {
+        margin-left: 15px;
+        align-items: flex-start;
+        margin-top: 0;
+      }
+
+      .logo {
+        margin-bottom: 0;
+      }
+
+      .logo img {
+        width: 180px;
+        max-width: 200px;
+      }
+
+      .main-heading {
+        font-size: 2.8rem;
+        text-align: left;
+        display: block;
+      }
+
+      .welcome-message {
+        font-size: 1.6rem;
+        margin-bottom: 0;
+        text-align: left;
+      }
+    }
+
+    .welcome-message {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+      position: relative;
+      height: 1.5em;
+      min-height: 1.5em;
+      filter: drop-shadow(3px 3px 5px var(--shadow-color)) drop-shadow(-3px -3px 5px rgba(255, 255, 255, 1));
+      font-weight: 500;
+      color: #555;
+    }
+
+    /* Desktop-specific welcome message styles */
+    @media (min-width: 1024px) {
+      .welcome-message {
+        font-size: 1.8rem;
+        height: 2em;
+        min-height: 2em;
+      }
+    }
+
+    .chat-container {
+      flex-grow: 1;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 8px 8px 15px var(--shadow-color), -8px -8px 15px rgba(255, 255, 255, 0.7);
+      transition: all 0.3s ease;
+      
+      position: relative;
+    }
+
+    .chat-container.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 60px;
+      z-index: 1000;
+      margin: 0;
+      border-radius: 0;
+      max-width: none;
+      max-height: none;
+      padding-bottom: 10px;
+    }
+
+    /* Desktop chat container adjustments */
+    @media (min-width: 1024px) {
+      .chat-container {
+        height: calc(100vh - 200px);
+       
+        padding: 30px;
+      }
+
+      .chat-container.fullscreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 80px;
+        width: 100%;
+        height: calc(100vh - 80px);
+        max-width: 100%;
+        max-height: calc(100vh - 80px);
+        padding: 30px;
+        margin: 0;
+        border-radius: 0;
+        z-index: 1000;
+      }
+    }
+
+    .chat-header {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      filter: drop-shadow(3px 3px 5px var(--shadow-color)) drop-shadow(-3px -3px 5px rgba(255, 255, 255, 1));
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(255, 140, 0, 0.2);
+    }
+
+    @media (min-width: 1024px) {
+      .chat-header {
+        font-size: 2rem;
+      }
+    }
+
+    .back-button {
+      background: none;
+      border: none;
+      color: var(--primary-color);
+      font-size: 1.5rem;
+      cursor: pointer;
+      position: absolute;
+      left: 20px;
+      display: none
+    }
+
+    .chat-container.fullscreen .back-button {
+      display: block
+    }
+
+    .chat-messages {
+      flex-grow: 1;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      padding: 10px;
+    }
+
+    /* Desktop-specific scrollbar styles */
+    @media (min-width: 1024px) {
+      .chat-messages::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .chat-messages::-webkit-scrollbar-track {
+        background: #f0f0f0;
+        border-radius: 10px;
+      }
+
+      .chat-messages::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color);
+        border-radius: 10px;
+      }
+
+      .chat-messages {
+        scrollbar-width: thin;
+        scrollbar-color: var(--primary-color) #f0f0f0;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .chat-messages {
+        max-height: calc(100% - 170px); /* More space for larger screens */
+      }
+
+      .chat-container.fullscreen .chat-messages {
+        max-height: calc(100% - 180px); /* Adjusted for fullscreen on desktop */
+        height: auto;
+        flex-grow: 1;
+      }
+    }
+
+    .message {
+      font-size: 18px;
+      margin-bottom: 20px;
+      padding: 15px 20px;
+      border-radius: 18px;
+      max-width: 85%;
+      box-shadow: 3px 3px 5px var(--shadow-color), -3px -3px 5px rgba(255, 255, 255, 0.7);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.5s forwards;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    @media (min-width: 1024px) {
+      .message {
+        font-size: 20px;
+        padding: 18px 24px;
+      }
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .user-message {
+      background-color: var(--primary-color);
+      color: white;
+      align-self: flex-end;
+      margin-left: auto
+    }
+
+    .bot-message {
+      background-color: #ffffff;
+      align-self: flex-start
+    }
+
+    .bot-message .word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: wordAppear 0.3s forwards;
+      margin-right: 4px
+
+    }
+
+    @keyframes wordAppear {
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .message-actions {
+      position: absolute;
+      bottom: -10px;
+      right: 0;
+
+      display: none;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 9px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1)
+
+    }
+
+    .bot-message:hover .message-actions {
+      display: flex
+    }
+
+    .message-action {
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: 5px;
+      font-size: 16px;
+      color: var(--primary-color);
+      transition: all 0.3s ease
+
+    }
+
+    .message-action:hover {
+      transform: scale(1.2)
+    }
+
+    .topics {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px; /* Reduced to give more space to input */
+      transition: all 0.3s ease;
+    }
+
+    .topic-bullet {
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: 1px solid rgba(255, 113, 0, 0.7);
+      transition: all 0.3s ease;
+      box-shadow: 3px 3px 5px var(--shadow-color), -3px -3px 5px rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+    }
+
+    .topic-bullet:hover {
+      background-color: var(--primary-color);
+      color: white;
+      transform: translateY(-3px);
+    }
+
+    /* Mobile-specific topic adjustments */
+    @media (max-width: 767px) {
+      .topics {
+        gap: 8px;
+        margin-top: 15px;
+      }
+      .chat-messages {
+      flex-grow: 1;
+      overflow-y: auto;
+      margin-bottom: 0px;
+      padding: 0px;
+    }
+    }
+
+    @media (min-width: 1024px) {
+      .topics {
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .topic-bullet {
+        font-size: 1rem;
+        padding: 10px 18px;
+      }
+    }
+
+    .chat-input-container {
+      position: relative;
+      margin-top: auto;
+      z-index: 10; /* Ensure it's above other elements */
+      padding-top: 10px; /* Add some space above */
+    }
+
+    .chat-input {
+      display: flex;
+      background: white;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: inset 3px 3px 5px var(--shadow-color), inset -3px -3px 5px rgba(255, 255, 255, 0.7), 0 4px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 140, 0, 0.2);
+      position: relative; /* Ensure proper stacking */
+    }
+
+    .chat-input input {
+      flex-grow: 1;
+      padding: 16px 20px;
+      border: none;
+      outline: none;
+      font-size: 1.1rem;
+      background: transparent;
+    }
+
+    .chat-input button {
+      padding: 14px 22px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .chat-input button:hover {
+      background-color: #e67300;
+      transform: scale(1.05);
+    }
+
+    @media (min-width: 1024px) {
+      .chat-input-container {
+        padding-top: 15px;
+      }
+
+      .chat-input input {
+        font-size: 1.2rem;
+        padding: 18px 25px;
+      }
+
+      .chat-input button {
+        padding: 16px 28px;
+        font-size: 1.3rem;
+      }
+    }
+
+    .typing-indicator {
+      position: absolute;
+      bottom: 100%;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      padding: 5px 10px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 15px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s ease
+    }
+
+    .typing-indicator.active {
+      opacity: 1
+    }
+
+    .typing-indicator .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      margin-right: 5px;
+      animation: typingDot 1.5s infinite ease-in-out
+    }
+
+    .typing-indicator .dot:nth-child(2) {
+      animation-delay: 0.2s
+    }
+
+    .typing-indicator .dot:nth-child(3) {
+      animation-delay: 0.4s
+    }
+
+    @keyframes typingDot {
+
+      0%,
+      60%,
+      100% {
+        transform: translateY(0)
+      }
+
+      30% {
+        transform: translateY(-10px)
+      }
+    }
+
+    .spiritual-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1
+    }
+
+    .particle {
+      position: absolute;
+      background-color: var(--primary-color);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float 5s infinite ease-in-out
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg)
+      }
+
+      50% {
+        transform: translateY(-120px) rotate(180deg)
+      }
+    }
+
+    /* Mobile styles */
+    @media (max-width: 767px) {
+      .container {
+        padding: 10px;
+      }
+
+      .chat-container {
+        padding: 15px;
+      }
+
+      .message {
+        max-width: 90%;
+        font-size: 16px; /* Reduced font size for message bubbles */
+      }
+
+      .bot-message {
+        font-size: 16px; /* Reduced font size for bot messages */
+      }
+
+      .logo img {
+        width: 90%; /* Increased logo size */
+        max-width: 220px;
+      }
+
+      .mobile-hidden {
+        display: none; /* Hide elements with mobile-hidden class */
+      }
+
+      .welcome-message {
+        font-size: 1.2rem; /* Reduced welcome message size */
+      }
+
+      .topic-bullet {
+        font-size: 0.85rem; /* Reduced topic bullet size */
+        padding: 6px 14px;
+      }
+
+      .chat-header {
+        font-size: 1.5rem; /* Reduced chat header size */
+      }
+
+      .chat-input input {
+        font-size: 0.95rem; /* Reduced input font size */
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="/navbar.css">
+</head>
+
+<body>
+  <div class="spiritual-particles" id="particles"></div>
+
+
+  <div class="container" id="appContainer">
+    <!-- Main chat container -->
+    <div class="chat-container" id="chatContainer">
+      <div class="chat-header">
+        <button class="back-button" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+        <span id="chatHeaderText">Bhagavad Gita Chat</span>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="message bot-message">
+          Namaste! I'm Sakha, your spiritual friend. I can help you explore the wisdom of the Bhagavad Gita. How can I guide you today?
+          <div class="message-actions">
+            <button class="message-action" onclick="likeMessage(this)"><i class="fas fa-thumbs-up"></i></button>
+            <button class="message-action" onclick="dislikeMessage(this)"><i class="fas fa-thumbs-down"></i></button>
+            <button class="message-action" onclick="copyMessage(this)"><i class="fas fa-copy"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="topics" id="topics">
+        <div class="topic-bullet" onclick="selectTopic('Karma')">Karma</div>
+        <div class="topic-bullet" onclick="selectTopic('Dharma')">Dharma</div>
+        <div class="topic-bullet" onclick="selectTopic('Meditation')">Meditation</div>
+        <div class="topic-bullet" onclick="selectTopic('Krishna')">Krishna</div>
+        <div class="topic-bullet" onclick="selectTopic('Yoga')">Yoga</div>
+      </div>
+      <div class="chat-input-container">
+        <div class="typing-indicator" id="typingIndicator">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <div class="chat-input">
+          <input type="text" id="userInput" placeholder="Ask about the Bhagavad Gita...">
+          <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="navbar-container"></div>
+  <script>
+    let currentMessageIndex = 0;
+    let currentCharIndex = 0;
+    let isDeleting = false;
+    let typingSpeed = 100;
+    let messageCount = 0;
+    const maxMessages = 10; // Increased message limit
+
+   
+    
+    function createParticles() {
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 20;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.width = `${Math.random() * 10 + 5}px`;
+            particle.style.height = particle.style.width;
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            particle.style.animationDelay = `${Math.random() * 5}s`;
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    function selectTopic(topic) {
+        const userInput = document.getElementById('userInput');
+        userInput.value = `Tell me about ${topic} in the Bhagavad Gita`;
+        sendMessage();
+    }
+    
+    async function getAIResponse(prompt) {
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt }),
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            const botResponse = data?.message?.response?.candidates?.[0]?.content?.parts?.[0]?.text
+                || data?.response
+                || "Sorry, I couldn't process that. Could you ask differently?";
+                
+            return botResponse;
+        } catch (error) {
+            console.error("Error getting AI response:", error);
+            return `Error: ${error.message}`;
+        }
+    }
+
+    function sendMessage() {
+        const userInput = document.getElementById('userInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const chatHeaderText = document.getElementById('chatHeaderText');
+
+        if (userInput.value.trim() !== '' && messageCount < maxMessages) {
+            messageCount++; // Increment message count
+
+            // Enter fullscreen mode
+            enterFullscreenMode();
+
+            // Hide elements that shouldn't be visible in fullscreen
+            
+            document.getElementById('topics').style.display = 'none';
+
+            chatHeaderText.textContent = 'Bhagavad Gita Chat';
+
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user-message';
+            userMessage.textContent = userInput.value;
+            chatMessages.appendChild(userMessage);
+
+            const prompt = userInput.value;
+            userInput.value = '';
+
+            typingIndicator.classList.add('active');
+            typingIndicator.style.animation = 'pulse 1s infinite';
+
+            getAIResponse(prompt).then(botResponse => {
+                typingIndicator.classList.remove('active');
+                typingIndicator.style.animation = '';
+
+                const botMessage = document.createElement('div');
+                botMessage.className = 'message bot-message';
+
+                chatMessages.appendChild(botMessage);
+
+                const words = botResponse.split(' ');
+                words.forEach((word, index) => {
+                    const span = document.createElement('span');
+                    span.className = 'word';
+                    span.textContent = word + ' ';
+                    span.style.animationDelay = `${index * 0.1}s`;
+                    botMessage.appendChild(span);
+                });
+
+                const messageActions = document.createElement('div');
+                messageActions.className = 'message-actions';
+                messageActions.innerHTML = `
+                    <button class="message-action" onclick="likeMessage(this)"><i class="fas fa-thumbs-up"></i></button>
+                    <button class="message-action" onclick="dislikeMessage(this)"><i class="fas fa-thumbs-down"></i></button>
+                    <button class="message-action" onclick="copyMessage(this)"><i class="fas fa-copy"></i></button>
+                `;
+                botMessage.appendChild(messageActions);
+
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+        }
+    }
+
+    function likeMessage(button) {
+        button.classList.toggle('active');
+        // Add like functionality
+    }
+
+    function dislikeMessage(button) {
+        button.classList.toggle('active');
+        // Add dislike functionality
+    }
+
+    function copyMessage(button) {
+        const message = button.closest('.message').textContent;
+        navigator.clipboard.writeText(message).then(() => {
+            // Show a tooltip or notification that the message was copied
+            alert("Message copied to clipboard!");
+        });
+    }
+
+    function goBack() {
+        const chatContainer = document.getElementById('chatContainer');
+   
+      
+        const topics = document.getElementById('topics');
+        const chatHeaderText = document.getElementById('chatHeaderText');
+
+        chatContainer.classList.remove('fullscreen');
+       
+        topics.style.display = 'flex';
+        chatHeaderText.textContent = 'Bhagavad Gita Chat';
+    }
+
+    function enterFullscreenMode() {
+        const chatContainer = document.getElementById('chatContainer');
+        chatContainer.classList.add('fullscreen');
+    }
+
+  
+    createParticles();
+
+    document.getElementById('userInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    window.addEventListener('scroll', () => {
+        const particles = document.querySelectorAll('.particle');
+        const scrollPosition = window.pageYOffset;
+        particles.forEach(particle => {
+            const parallaxSpeed = particle.style.height.replace('px', '') / 10;
+            particle.style.transform = `translateY(${scrollPosition * parallaxSpeed}px)`;
+        });
+    });
+  </script>
+   <script src="/navbar.js"></script>
+</body>
+
+</html>
