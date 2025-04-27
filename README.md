@@ -1,13 +1,13 @@
-# Book Chat - RAG Application
+# Book Chat - Minimal RAG Application
 
-This is a RAG (Retrieval-Augmented Generation) application that allows you to chat with your book. It uses Google's embedding model to index the book and Gemini to generate responses based on the retrieved context.
+This is a minimal RAG (Retrieval-Augmented Generation) application that allows you to chat with pre-indexed book content. It uses Google's Gemini model to generate responses based on retrieved context from stored embeddings.
 
 ## Features
 
-- Upload and index your book
-- Chat with your book using natural language
+- Chat with pre-indexed book content using natural language
 - Retrieval-Augmented Generation for accurate responses
 - Built with Next.js for Vercel deployment
+- Simple HTML/JS interface
 
 ## Getting Started
 
@@ -31,16 +31,10 @@ This is a RAG (Retrieval-Augmented Generation) application that allows you to ch
 ### Running the Application
 
 ```bash
-npm run dev
+npm run serve
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Indexing Your Book
-
-1. Prepare your book as a text file (.txt)
-2. Upload the book through the web interface
-3. The system will automatically index the book
 
 ## Deployment on Vercel
 
@@ -53,7 +47,7 @@ This application is designed to be deployed on Vercel's free tier:
 
 ## How It Works
 
-1. The book is split into chunks and embedded using Google's embedding model
+1. The application loads pre-indexed embeddings from the book-embeddings.json file
 2. When you ask a question, the system finds the most relevant chunks using vector similarity
 3. The relevant chunks are sent to Gemini along with your question
 4. Gemini generates a response based on the context

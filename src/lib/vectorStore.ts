@@ -32,94 +32,6 @@ export class VectorStore {
     }
   }
 
-  // Save documents to disk
-  private saveToDisk() {
-    try {
-      fs.writeFileSync(this.filePath, JSON.stringify(this.documents, null, 2));
-      console.log(`Saved ${this.documents.length} documents to ${this.filePath}`);
-    } catch (error) {
-      console.error('Error saving documents to disk:', error);
-    }
-  }
-
-  // Add a document to the store with error handling
-  async addDocument(text: string, id?: string): Promise<string> {
-    try {
-      const docId = id || `doc_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-
-      // Generate embedding with timeout and error handling
-      console.log(`Generating embedding for document ${docId}...`);
-      const embedding = await generateEmbedding(text);
-
-      // Add the document to the store
-      this.documents.push({
-        id: docId,
-        text,
-        embedding
-      });
-
-      // Save to disk (this is now done in batches in addDocuments)
-      // Only save here if called directly
-      if (!id) {
-        this.saveToDisk();
-      }
-
-      return docId;
-    } catch (error) {
-      console.error(`Error adding document:`, error);
-      throw error;
-    }
-  }
-
-  // Add multiple documents to the store with batch processing
-  async addDocuments(texts: string[]): Promise<string[]> {
-    const ids: string[] = [];
-
-    // Handle empty array case
-    if (!texts || texts.length === 0) {
-      console.warn('No texts provided to addDocuments');
-      return ids;
-    }
-
-    // Filter out empty texts
-    const validTexts = texts.filter(text => text && text.trim().length > 0);
-
-    // Process in batches to avoid overwhelming the API
-    const batchSize = 5; // Process 5 documents at a time
-
-    for (let i = 0; i < validTexts.length; i += batchSize) {
-      const batch = validTexts.slice(i, i + batchSize);
-      console.log(`Processing batch ${Math.floor(i / batchSize) + 1} of ${Math.ceil(validTexts.length / batchSize)}...`);
-
-      // Process each text in the batch
-      const batchPromises = batch.map(async (text) => {
-        try {
-          const id = await this.addDocument(text);
-          return id;
-        } catch (error) {
-          console.error('Error adding document:', error);
-          return null; // Return null for failed documents
-        }
-      });
-
-      // Wait for all documents in the batch to be processed
-      const batchIds = await Promise.all(batchPromises);
-
-      // Add successful IDs to the result
-      ids.push(...batchIds.filter(id => id !== null) as string[]);
-
-      // Save after each batch
-      this.saveToDisk();
-
-      // Add a small delay between batches to avoid rate limiting
-      if (i + batchSize < validTexts.length) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-    }
-
-    return ids;
-  }
-
   // Search for similar documents
   async search(query: string, topK: number = 3): Promise<Document[]> {
     if (this.documents.length === 0) {
@@ -145,11 +57,5 @@ export class VectorStore {
   // Get all documents
   getAllDocuments(): Document[] {
     return this.documents;
-  }
-
-  // Clear all documents
-  clearDocuments() {
-    this.documents = [];
-    this.saveToDisk();
   }
 }
