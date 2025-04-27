@@ -4,11 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "node build.js",
+    "build": "next build",
     "start": "next start",
     "serve": "node server.js",
     "static-build": "cp -r public/ .next/static/",
-    "prepare-static": "node prepare-static.js",
     "lint": "next lint"
   },
   "dependencies": {

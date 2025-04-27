@@ -1,14 +1,16 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "public/**/*",
-      "use": "@vercel/static"
-    }
-  ],
+  "buildCommand": "next build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": "public",
   "routes": [
     { "handle": "filesystem" },
     { "src": "/", "dest": "/index.html" },
+    { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/index.html" }
-  ]
+  ],
+  "env": {
+    "NEXT_PUBLIC_VERCEL_ENV": "production"
+  }
 }
