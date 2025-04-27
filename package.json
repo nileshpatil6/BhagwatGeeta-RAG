@@ -4,10 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "bash vercel-build.sh",
     "start": "next start",
     "serve": "node server.js",
-    "static-build": "cp -r public/ .next/static/",
     "lint": "next lint"
   },
   "dependencies": {
